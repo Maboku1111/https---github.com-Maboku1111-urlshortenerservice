@@ -29,4 +29,6 @@ const userId = 'user123';
 const shortUrl = generateShortURL(longUrl, userId);
 console.log('Short URL:', shortUrl);
 
+export default { generateShortURL }
+
 
