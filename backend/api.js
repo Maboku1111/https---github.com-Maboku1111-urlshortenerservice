@@ -1,39 +1,56 @@
-const http = require("http");
-const Db = require("/backend/db.js");
-const { generateShortURL } = require("/backend/shortener.js");
+import http from "http";
+import { request as _request } from "http";
+import Db from "./db.js";
+import generateShortURL from "./shortener.js";
 
-const options = {
-  hostname: "http://localhost",
-  port: 80,
-  path: "/api/urls",
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
+const url = {
+  key: 'h5i2bt2',
+  longUrl: 'https://www.google.com',
+  shortUrl: 'https://www.google.com'
 };
 
-const req = http.request(options, (res) => {
-  console.log(`STATUS: ${res.statusCode}`);
-  console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-  res.setEncoding("utf8");
-  res.on("data", (chunk) => {
-    console.log(`BODY: ${chunk}`);
-  });
-  res.on("end", () => {
-    console.log("No more data in response.");
-  });
-});
+const data = JSON.stringify(url);
 
-req.on("error", (e) => {
-  console.error(`problem with request: ${e.message}`);
-});
+// const TOKEN = Buffer.from('TOKEN-12345').toString('base64')
+
+const options = {
+  hostname: 'localhost',
+  port: 3000,
+  path: '/api/urls',
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+    // 'Content-Length': data.length,
+    // 'X-Authorization': TOKEN
+  }
+}
 
 const server = http.createServer((req, res) => {
-  if (req.url === "/") {
-    res.write("Hello World");
-    res.end();
+  if (req.url === '/') {
+    res.end('Hello world!')
   }
-});
 
-server.listen(3000);
-console.log("Listening on port 3000");
+  const request = _request(
+    options, (response) => {
+    console.log('Response Status Code :>> ', response.statusCode);
+  
+    response.on('data', (chunk) => {
+      Db.saveToStorage('urls', chunk.toString())
+      console.log(`Data arrived: ${chunk.toString()}`);
+    });
+  
+    response.on('error', (err) => {
+      console.log('Response error :>> ', err);
+    })
+  
+  });
+  
+  request.write(data);
+  
+  request.end();
+})
+
+
+server.listen(3000, () => {
+  console.log('Server started on localhost:3000!');
+})

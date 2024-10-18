@@ -1,5 +1,5 @@
-const crypto = require('crypto');
-const Base58 = require('base-58');
+import crypto from "crypto";
+import Base58 from "base-58"
 
 // Hash function
 function createHash(url) {
@@ -12,7 +12,7 @@ function base58Encoded(bytes) {
 }
 
 // Function to generate the short URL link
-function generateShortURL(initialLink, userId) {
+export default function generateShortURL(initialLink, userId) {
   // Step 1: Create a hash of the concatenated initialLink and userId
   const urlHashBytes = createHash(initialLink + userId);
   
@@ -29,6 +29,6 @@ const userId = 'user123';
 const shortUrl = generateShortURL(longUrl, userId);
 console.log('Short URL:', shortUrl);
 
-export default { generateShortURL }
+
 
 
