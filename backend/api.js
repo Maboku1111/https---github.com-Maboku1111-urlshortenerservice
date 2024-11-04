@@ -4,18 +4,18 @@ import Db from "./db.js";
 import generateShortURL from "./shortener.js";
 
 const server = http.createServer((req, res) => {
-  if (req.url === '/' && req.method === 'GET') {
-    res.end('Hello world!');
-  } else if (req.url === '/shorten-url' && req.method === 'POST') {
+  if (req.url === "/" && req.method === "GET") {
+    res.end("Hello world!");
+  } else if (req.url === "/shorten-url" && req.method === "POST") {
     let body = '';
 
     // Step 1: Collect data in chunks
-    req.on('data', (chunk) => {
+    req.on("data", (chunk) => {
       body += chunk;
     });
 
     // Step 2: Once all data is received, process it
-    req.on('end', () => {
+    req.on("end", () => {
       try {
         const requestData = JSON.parse(body); // Parse JSON from client
         const long_url = requestData.long_url; // Access long_url sent by client
@@ -24,7 +24,7 @@ const server = http.createServer((req, res) => {
         const responseObject = {
           key: short_key,
           long_url: long_url,
-          short_url: `http://localhost:3000/${short_key}`
+          short_url: `http://localhost:3000/${short_key}`,
         };
 
         // Step 3: Save to storage
