@@ -1,21 +1,21 @@
 import crypto from "crypto";
-import Base58 from "base-58"
+import Base58 from "base-58";
 
 // Hash function
-function createHash(url) {
-  return crypto.createHash('sha256').update(url).digest();
+export function createHash(url) {
+  return crypto.createHash("sha256").update(url).digest();
 }
 
 // Binary-to-text encoding algorithm
-function base58Encoded(bytes) {
+export function base58Encoded(bytes) {
   return Base58.encode(bytes);
 }
 
 // Function to generate the short URL link
-export default function generateShortURL(initialLink, userId) {
+export function generateShortURL(initialLink, userId) {
   // Step 1: Create a hash of the concatenated initialLink and userId
   const urlHashBytes = createHash(initialLink + userId);
-  
+
   // Step 2: Encode the hash bytes using Base58
   const base58EncodedString = base58Encoded(urlHashBytes);
 
@@ -24,11 +24,9 @@ export default function generateShortURL(initialLink, userId) {
 }
 
 // Example usage:
-const longUrl = 'https://example.com';
-const userId = 'user123';
+const longUrl = "https://example.com";
+const userId = "user123";
 const shortUrl = generateShortURL(longUrl, userId);
-console.log('Short URL:', shortUrl);
+console.log("Short URL:", shortUrl);
 
-
-
-
+// module.exports = { createHash, base58Encoded, generateShortURL };
