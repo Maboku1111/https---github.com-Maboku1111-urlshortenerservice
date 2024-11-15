@@ -1,12 +1,16 @@
 import http from "http";
 import { request as _request } from "http";
-import Db from "./db.js";
 import generateShortURL from "./shortener.js";
+import { arr } from './database.js';
+
+const host = 'ezrahcodes.com';
+const path = '/shorten-url';
+const query = 'search=keyword';
 
 const server = http.createServer((req, res) => {
   if (req.url === "/" && req.method === "GET") {
     res.end("Hello world!");
-  } else if (req.url === "/shorten-url" && req.method === "POST") {
+  } else if (req.url === path && req.method === "POST") {
     let body = '';
 
     // Step 1: Collect data in chunks
@@ -28,7 +32,7 @@ const server = http.createServer((req, res) => {
         };
 
         // Step 3: Save to storage
-        Db.saveToStorage("urls", responseObject);
+        arr.push(responseObject);
 
         // Step 4: Send JSON response back to client
         res.writeHead(200, { "Content-Type": "application/json" });
@@ -37,6 +41,10 @@ const server = http.createServer((req, res) => {
         // Handle parsing errors or other issues
         res.writeHead(400, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: "Invalid JSON data received" }));
+      } finally {
+        http.get(`http://${host}${path}?${query}`, (res) => {
+          res.writeHead(302, ({}))
+        })
       }
     });
   } else {
