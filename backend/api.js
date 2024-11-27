@@ -1,7 +1,7 @@
 import http from "http";
 import { request as _request } from "http";
 import generateShortURL from "./shortener.js";
-import { arr } from './database.js';
+import { map } from './database.js';
 
 const host = 'ezrahcodes.com';
 const path = '/shorten-url';
@@ -32,11 +32,11 @@ const server = http.createServer((req, res) => {
         };
 
         // Step 3: Save to storage
-        arr.push(responseObject);
+        map.set("urls", responseObject)
 
         // Step 4: Send JSON response back to client
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(responseObject));
+        res.end(JSON.stringify(storedUrls));
       } catch (error) {
         // Handle parsing errors or other issues
         res.writeHead(400, { "Content-Type": "application/json" });

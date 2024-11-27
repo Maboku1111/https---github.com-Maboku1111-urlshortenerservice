@@ -1,3 +1,3 @@
-const arr = [];
+const map = new Map();
 
-export default {arr};
+export {map}
