@@ -28,10 +28,11 @@ const server = http.createServer((req, res) => {
           long_url: long_url,
           short_url: `http://localhost:3000/${short_key}`,
         };
+        console.log(responseObject);
 
         // Step 3: Save to storage
-        map.set(responseObject.key, responseObject.long_url);
-        const storedUrls = map.get(responseObject.key);
+        map.set(responseObject.short_url, responseObject.long_url);
+        const storedUrls = map.get(responseObject.short_url);
         console.log(storedUrls);
 
         // Step 4: Send JSON response back to client
