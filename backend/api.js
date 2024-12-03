@@ -1,5 +1,4 @@
 import http from "http";
-import { request as _request } from "http";
 import generateShortURL from "./shortener.js";
 import { map } from "./database.js";
 
@@ -31,23 +30,35 @@ const server = http.createServer((req, res) => {
         console.log(responseObject);
 
         // Step 3: Save to storage
-        map.set(responseObject.short_url, responseObject.long_url);
-        const storedUrls = map.get(responseObject.short_url);
+        map.set(responseObject.key, responseObject.long_url);
+        const storedUrls = map.get(responseObject.key);
         console.log(storedUrls);
 
         // Step 4: Send JSON response back to client
         res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(storedUrls));
+        res.end(JSON.stringify(responseObject));
       } catch (error) {
         // Handle parsing errors or other issues
         res.writeHead(400, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ error: "Invalid JSON data received" }));
       }
     });
+  } else if (req.method === "GET") {
+    const short_key = req.url.split("/")[1]; // Extract short key from the URL path
+    const long_url = map.get(short_key);
+
+    if (long_url) {
+      // Redirect the client to the long URL
+      res.writeHead(302, { Location: long_url });
+      res.end();
+    } else {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end("Short URL not found");
+    }
   } else {
     res.writeHead(404, { "Content-Type": "text/plain" });
     res.end("Not Found");
-  } 
+  }
 });
 
 server.listen(3000, () => {
